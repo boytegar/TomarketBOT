@@ -21,17 +21,18 @@ def print_timestamp(message):
 class Tomarket:
     def __init__(self):
         self.headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'Host': 'api-web.tomarket.ai',
-            'Origin': 'https://mini-app.tomarket.ai',
-            'Referer': 'https://mini-app.tomarket.ai/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-site',
-            'User-Agent': FakeUserAgent().random
+            "host": "api-web.tomarket.ai",
+            "connection": "keep-alive",
+            "accept": "application/json, text/plain, */*",
+            "user-agent": "Mozilla/5.0 (Linux; Android 10; Redmi 4A / 5A Build/QQ3A.200805.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.185 Mobile Safari/537.36",
+            "content-type": "application/json",
+            "origin": "https://mini-app.tomarket.ai",
+            "x-requested-with": "tw.nekomimi.nekogram",
+            "sec-fetch-site": "same-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://mini-app.tomarket.ai/",
+            "accept-language": "en-US,en;q=0.9",
         }
 
     def parse_query(self, query: str):
