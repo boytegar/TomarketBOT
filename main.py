@@ -58,6 +58,8 @@ def main():
     tom = Tomarket()
     auto_task = input("auto clear task y/n  : ").strip().lower()
     auto_game = input("auto play game  y/n  : ").strip().lower()
+    # selector_game = input("playing random score game (400-600) y/n ? ").strip().lower()
+    used_stars = input("use star for : 1. upgrade rank | 2.auto spin | n.(skip all) (1/2/n): ").strip().lower()
     while True:
         queries = load_credentials()
         sum = len(queries)
@@ -76,7 +78,7 @@ def main():
                 save(user.get('id'), token)
                 time.sleep(2)
             print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
-            tom.rank_data(token=token)
+            tom.rank_data(token=token, selector=used_stars)
             time.sleep(2)
             tom.claim_daily(token=token)
             time.sleep(2)

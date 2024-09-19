@@ -1,0 +1,7 @@
+__pycache__
+.vscode
+venv
+.DS_Store
+query_bak.txt
+query_id.txt
+tokens.json

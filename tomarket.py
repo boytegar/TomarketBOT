@@ -397,8 +397,35 @@ class Tomarket:
         response = requests.post(url=url, headers=self.headers)
         data = self.response_data(response)
         return data
-        
-    def rank_data(self, token):
+
+    def upgrade_rank(self, token, payload):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/rank/upgrade'
+        self.headers.update({
+            'Authorization': token
+        })
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        data = self.response_data(response)
+        return data
+
+    def share_tg(self, token):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/rank/sharetg'
+        self.headers.update({
+            'Authorization': token
+        })
+        response = requests.post(url=url, headers=self.headers)
+        data = self.response_data(response)
+        return data
+
+    def raffle(self, token, payload):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/spin/raffle'
+        self.headers.update({
+            'Authorization': token
+        })
+        response = requests.post(url=url, headers=self.headers,json=payload)
+        data = self.response_data(response)
+        return data
+
+    def rank_data(self, token, selector):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/rank/data'
         self.headers.update({
             'Authorization': token
@@ -411,7 +438,43 @@ class Tomarket:
                 isCreated = dat.get('isCreated')
                 if isCreated:
                     currentRank = dat.get('currentRank')
-                    print_timestamp(f"[ Rank : {currentRank.get('name')} | Level : {currentRank.get('level')} ]")
+                    nextRank = dat.get('nextRank')
+                    unusedStars = dat.get('unusedStars')
+                    print_timestamp(f"[ Rank : {currentRank.get('name')} | Level : {currentRank.get('level')} | Stars: {unusedStars} ]")
+                    minStar = nextRank.get('minStar',0)
+                    range = nextRank.get('range', 0)
+                    if selector == '1':
+                        if unusedStars >= range:
+                            print_timestamp('[ Upgraded Rank... ]')
+                            sleep(2)
+                            payload = {'stars': unusedStars}
+                            upgrade_data = self.upgrade_rank(token=token, payload=payload)
+                            if upgrade_data is not None:
+                                data = upgrade_data.get('data',{})
+                                currentRank = data.get('currentRank')
+                                sleep(1)
+                                data_share_tg = self.share_tg(token=token)
+                                if data_share_tg is not None:
+                                    print_timestamp(f"[ Upgrade to rank {currentRank.get('name')} Done ]")
+                        else:
+                            print_timestamp(f"[ Need {range-unusedStars} stars to upgrade rank {nextRank.get('name', 'none')} ]")
+                            
+                    elif selector == '2':
+                        if unusedStars > 0:
+                            print_timestamp('[ Playing raffle... ]')
+                            payload = {'category': "tomarket"}
+                            data_raffle = self.raffle(token=token, payload=payload)
+                            if data_raffle is not None:
+                                status = data_raffle.get('status', 0)
+                                if status == 0:
+                                    data = data_raffle.get('data',{})
+                                    result = data.get('results',[])
+                                    for res in result:
+                                        print_timestamp(f"[ Raffle Done, Reward {res.get('amount',0)} {res.get('type')} ]")
+                                else:
+                                    print_timestamp()
+                        else:
+                            print_timestamp('[ No stars to play raffle ]')
                 else:
                     sleep(2)
                     data_validate = self.validate(token)
