@@ -84,22 +84,7 @@ def main():
             time.sleep(2)
             tom.start_farm(token=token)
             time.sleep(2)
-            
-        if auto_game == 'y':
-            for index, query in enumerate(queries):
-                mid_time = time.time()
-                total = delay - (mid_time-start_time)
-                if total <= 0:
-                    break
-                parse = parse_query(query)
-                user = parse.get('user')
-                token = get(user['id'])
-                if token == None:
-                    token = tom.user_login(query)
-                print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
-                tom.user_balance(token=token)
-                time.sleep(2)
-
+        
         if auto_task == 'y':
             for index, query in enumerate(queries):
                 mid_time = time.time()
@@ -115,8 +100,21 @@ def main():
                 tom.list_tasks(token=token,query=query)
                 # tom.rank_data(token=token)
                 time.sleep(2)   
-
-        
+                
+        if auto_game == 'y':
+            for index, query in enumerate(queries):
+                mid_time = time.time()
+                total = delay - (mid_time-start_time)
+                if total <= 0:
+                    break
+                parse = parse_query(query)
+                user = parse.get('user')
+                token = get(user['id'])
+                if token == None:
+                    token = tom.user_login(query)
+                print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
+                tom.user_balance(token=token)
+                time.sleep(2)
 
         
 

@@ -90,6 +90,7 @@ class Tomarket:
             self.headers.update({
                 'Authorization': token
             })
+            
             payload = {
                 'game_id': '59bcd12e-04e2-404c-a172-311a0084587d'
             }
@@ -263,17 +264,110 @@ class Tomarket:
             standard = data.get('standard', [])
             expire = data.get('expire', [])
             default = data.get('default', [])
+            free_tomato = data.get('free_tomato',[])
+            # invite_star_group = data.get('invite_star_group',[])
+            invite_star_group = []
             for task in default:
                 if task['status'] == 0 and task['type'] == "mysterious":
                     current_time = datetime.now()
-                    end_time = datetime.strptime(task["endTime"], "%Y-%m-%d %H:%M:%S")
-                    if current_time < end_time:
+                    date_part = current_time.strftime("%Y-%m-%d")
+                    split_time  = task.get('startTime')
+                    end_time = split_time.split(" ")[0]
+                    if date_part == end_time:
                         print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
                         self.claim_tasks(token=token, task_id=task['taskId'])
                         sleep(2)
             
+            for task in free_tomato:
+                if task['status'] == 1:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ You Haven't Finish Or Start This {task['title']} Task ]{Style.RESET_ALL}")
+                    trys = 9
+                    while True:
+                        if trys <= 0:
+                            break
+                        sleep(5)
+                        data = self.check_tasks(token=token, task_id=task['taskId'], init_data=query)
+                        if data['data']['status'] == 2:
+                            self.claim_tasks(token=token, task_id=task['taskId'])
+                            break
+                        trys -= 1
+
+                elif task['status'] == 2:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
+                    self.claim_tasks(token=token, task_id=task['taskId'])
+                    sleep(2)
+
+                elif task['status'] == 0:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Starting {task['title']} ]{Style.RESET_ALL}")
+                    self.start_tasks(query=query, token=token, task_id=task['taskId'])
+                    sleep(5)
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ You Haven't Finish Or Start This {task['title']} Task ]{Style.RESET_ALL}")
+                    trys = 9
+                    while True:
+                        if trys <= 0:
+                            break
+                        sleep(3)
+                        data = self.check_tasks(token=token, task_id=task['taskId'],init_data=query)
+                        if data['data']['status'] == 2:
+                            self.claim_tasks(token=token, task_id=task['taskId'])
+                            break
+                        trys -= 1
+
+            for task in invite_star_group:
+                if task['status'] == 1:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ You Haven't Finish Or Start This {task['title']} Task ]{Style.RESET_ALL}")
+                    trys = 9
+                    while True:
+                        if trys <= 0:
+                            break
+                        sleep(5)
+                        data = self.check_tasks(token=token, task_id=task['taskId'], init_data=query)
+                        if data['data']['status'] == 2:
+                            self.claim_tasks(token=token, task_id=task['taskId'])
+                            break
+                        trys -= 1
+
+                elif task['status'] == 2:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
+                    self.claim_tasks(token=token, task_id=task['taskId'])
+                    sleep(2)
+
+                elif task['status'] == 0:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Starting {task['title']} ]{Style.RESET_ALL}")
+                    self.start_tasks(query=query, token=token, task_id=task['taskId'])
+                    sleep(5)
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ You Haven't Finish Or Start This {task['title']} Task ]{Style.RESET_ALL}")
+                    trys = 9
+                    while True:
+                        if trys <= 0:
+                            break
+                        sleep(3)
+                        data = self.check_tasks(token=token, task_id=task['taskId'],init_data=query)
+                        if data['data']['status'] == 2:
+                            self.claim_tasks(token=token, task_id=task['taskId'])
+                            break
+                        trys -= 1
+
             for task in standard:
-                if task['status'] == 0:
+                if task['status'] == 1:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ You Haven't Finish Or Start This {task['title']} Task ]{Style.RESET_ALL}")
+                    trys = 9
+                    while True:
+                        if trys <= 0:
+                            break
+                        sleep(5)
+                        data = self.check_tasks(token=token, task_id=task['taskId'], init_data=query)
+                        if data['data']['status'] == 2:
+                            self.claim_tasks(token=token, task_id=task['taskId'])
+                            break
+                        trys -= 1
+
+                elif task['status'] == 2:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
+                    self.claim_tasks(token=token, task_id=task['taskId'])
+                    sleep(2)
+
+                elif task['status'] == 0:
                     waitSecond = task.get('waitSecond')
                     sleep(3)
                     trys = 9
@@ -294,13 +388,28 @@ class Tomarket:
                     # sleep(waitSecond)
                     # print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
                     # self.claim_tasks(token=token, task_id=task['taskId'])
+                
+            
+            for task in expire:
+                if task['status'] == 1:
+                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ You Haven't Finish Or Start This {task['title']} Task ]{Style.RESET_ALL}")
+                    trys = 9
+                    while True:
+                        if trys <= 0:
+                            break
+                        sleep(5)
+                        data = self.check_tasks(token=token, task_id=task['taskId'], init_data=query)
+                        if data['data']['status'] == 2:
+                            self.claim_tasks(token=token, task_id=task['taskId'])
+                            break
+                        trys -= 1
+
                 elif task['status'] == 2:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
                     self.claim_tasks(token=token, task_id=task['taskId'])
                     sleep(2)
-            
-            for task in expire:
-                if task['status'] == 0:
+
+                elif task['status'] == 0:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Starting {task['title']} ]{Style.RESET_ALL}")
                     self.start_tasks(query=query, token=token, task_id=task['taskId'])
                     sleep(5)
@@ -317,10 +426,10 @@ class Tomarket:
                         trys -= 1
                     # print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
                     # self.claim_tasks(token=token, task_id=task['taskId'])
-                elif task['status'] == 2:
-                    print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
-                    self.claim_tasks(token=token, task_id=task['taskId'])
-                    sleep(2)  
+                # elif task['status'] == 2:
+                #     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Claiming {task['title']} ]{Style.RESET_ALL}")
+                #     self.claim_tasks(token=token, task_id=task['taskId'])
+                #     sleep(2)  
 
         except (Exception) as e:
             return print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {e} ]{Style.RESET_ALL}")
