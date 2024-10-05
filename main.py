@@ -43,7 +43,7 @@ def generate_token():
     for index, query in enumerate(queries):
             parse = parse_query(query)
             user = parse.get('user')
-            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
+            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
             token = get(user['id'])
             if token == None:
                 print_timestamp("Generate token...")
@@ -58,6 +58,7 @@ def main():
     tom = Tomarket()
     auto_task = input("auto clear task y/n  : ").strip().lower()
     auto_game = input("auto play game  y/n  : ").strip().lower()
+    random_number = input("set random score in game 300-500  y/n  : ").strip().lower()
     # selector_game = input("playing random score game (400-600) y/n ? ").strip().lower()
     used_stars = input("use star for : 1. upgrade rank | 2.auto spin | n.(skip all) (1/2/n): ").strip().lower()
     while True:
@@ -113,7 +114,7 @@ def main():
                 if token == None:
                     token = tom.user_login(query)
                 print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
-                tom.user_balance(token=token)
+                tom.user_balance(token=token, random_number=random_number)
                 time.sleep(2)
 
         

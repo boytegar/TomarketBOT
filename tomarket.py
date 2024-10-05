@@ -53,14 +53,13 @@ class Tomarket:
                     'is_bot': False
                 }
                 response = requests.post(url=url, headers=self.headers, json=payload)
-                response.raise_for_status()
-                data = response.json()
+                data = self.response_data(response)
                 token = f"{data['data']['access_token']}"
                 return token
         except (Exception) as e:
             return print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {e} ]{Style.RESET_ALL}")
 
-    def user_balance(self, token: str):
+    def user_balance(self, token, random_number):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/user/balance'
         try:
             self.headers.update({
@@ -77,14 +76,17 @@ class Tomarket:
         
                 while data['data']['play_passes'] > 0:
                     sleep(2)
-                    self.play_game(token=token)
+                    point = 600
+                    if random_number =='y':
+                        point = random.randint(300,500)
+                    self.play_game(token=token, point=point)
                     data['data']['play_passes'] -= 1
             else:
                 print_timestamp('user balance data not found')
         except (Exception) as e:
             return print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {e} ]{Style.RESET_ALL}")
 
-    def play_game(self, token: str):
+    def play_game(self, token, point):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/game/play'
         try:
             self.headers.update({
@@ -105,7 +107,7 @@ class Tomarket:
                     print_timestamp(f"{Fore.GREEN + Style.BRIGHT}[ Game Started Please Wait {int(total_seconds)} Seconds ]{Style.RESET_ALL}")
                     slp = random.randint(30, 35)
                     sleep(slp)
-                    self.claim_game(token=token, points=600)
+                    self.claim_game(token=token, points=point)
                 elif data['status'] == 500:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ No Chance To Play Game ]{Style.RESET_ALL}")
                 else:
@@ -132,7 +134,7 @@ class Tomarket:
                     print_timestamp(f"{Fore.GREEN + Style.BRIGHT}[ Game Claimed {data['data']['points']} ]")
                 elif data['status'] == 500:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Game Not Start ]")
-                    self.play_game(token=token)
+                    self.play_game(token=token, point=points)
                 else:
                     print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {data['message']} ]{Style.RESET_ALL}")
             else:
@@ -505,7 +507,7 @@ class Tomarket:
             print_timestamp(f"Error {response.status_code}")
             return None
         elif response.status_code >= 400:
-            print_timestamp(f"Error {response.status_code}")
+            print_timestamp(f"Error {response.status_code} : msg {response.text}")
             return None
         elif response.status_code >= 200:
             return response.json()
