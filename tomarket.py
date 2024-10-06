@@ -502,6 +502,36 @@ class Tomarket:
             else:
                 print_timestamp(data.get('message','Data Rank Not Found'))
 
+    def free_spin(self, token, query):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/user/tickets'
+        payload = {"language_code":"en","init_data":query}
+        self.headers.update({
+            'Authorization': token
+        })
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        data = self.response_data(response)
+        if data is not None:
+            payloads = {"category":"ticket_spin_1"}
+            status = data.get('status')
+            if status == 0:
+                dats = data.get('data')
+                ticket_spin_1 = dats.get('ticket_spin_1',0)
+                if ticket_spin_1 > 0:
+                    print_timestamp('Open Free Raffle')
+                    sleep(2)
+                    data_raffle = self.raffle(token=token, payload=payloads)
+                    if data_raffle is not None:
+                        status = data_raffle.get('status', 0)
+                        if status == 0:
+                            data = data_raffle.get('data',{})
+                            result = data.get('results',[])
+                            for res in result:
+                                print_timestamp(f"[ Raffle Done, Reward {res.get('amount',0)} {res.get('type')} ]")
+                        else:
+                            print_timestamp()
+
+        return data
+
     def response_data(self, response):
         if response.status_code >= 500:
             print_timestamp(f"Error {response.status_code}")

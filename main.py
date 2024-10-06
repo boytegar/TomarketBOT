@@ -59,6 +59,7 @@ def main():
     auto_task = input("auto clear task y/n  : ").strip().lower()
     auto_game = input("auto play game  y/n  : ").strip().lower()
     random_number = input("set random score in game 300-500  y/n  : ").strip().lower()
+    free_raffle = input("enable free raffle  y/n  : ").strip().lower()
     # selector_game = input("playing random score game (400-600) y/n ? ").strip().lower()
     used_stars = input("use star for : 1. upgrade rank | 2.auto spin | n.(skip all) (1/2/n): ").strip().lower()
     while True:
@@ -84,6 +85,9 @@ def main():
             tom.claim_daily(token=token)
             time.sleep(2)
             tom.start_farm(token=token)
+            time.sleep(2)
+            if free_raffle == "y":
+                tom.free_spin(token=token, query=query)
             time.sleep(2)
         
         if auto_task == 'y':
