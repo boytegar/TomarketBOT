@@ -58,7 +58,7 @@ def main():
     tom = Tomarket()
     auto_task = input("auto clear task y/n  : ").strip().lower()
     auto_game = input("auto play game  y/n  : ").strip().lower()
-    auto_combo = input("auto claim combo y/n : ").strip().lower()
+    auto_combo = input("auto claim combo puzzle y/n : ").strip().lower()
     random_number = input("set random score in game 300-500  y/n  : ").strip().lower()
     free_raffle = input("enable free raffle  y/n  : ").strip().lower()
     # selector_game = input("playing random score game (400-600) y/n ? ").strip().lower()
@@ -70,26 +70,26 @@ def main():
         # generate_token()
         start_time = time.time()
                 
-        # for index, query in enumerate(queries):
-        #     mid_time = time.time()
-        #     total = delay - (mid_time-start_time)
-        #     parse = parse_query(query)
-        #     user = parse.get('user')
-        #     token = get(user['id'])
-        #     if token == None:
-        #         token = tom.user_login(query)
-        #         save(user.get('id'), token)
-        #         time.sleep(2)
-        #     print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
-        #     tom.rank_data(token=token, selector=used_stars)
-        #     time.sleep(2)
-        #     tom.claim_daily(token=token)
-        #     time.sleep(2)
-        #     tom.start_farm(token=token)
-        #     time.sleep(2)
-        #     if free_raffle == "y":
-        #         tom.free_spin(token=token, query=query)
-        #     time.sleep(2)
+        for index, query in enumerate(queries):
+            mid_time = time.time()
+            total = delay - (mid_time-start_time)
+            parse = parse_query(query)
+            user = parse.get('user')
+            token = get(user['id'])
+            if token == None:
+                token = tom.user_login(query)
+                save(user.get('id'), token)
+                time.sleep(2)
+            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
+            tom.rank_data(token=token, selector=used_stars)
+            time.sleep(2)
+            tom.claim_daily(token=token)
+            time.sleep(2)
+            tom.start_farm(token=token)
+            time.sleep(2)
+            if free_raffle == "y":
+                tom.free_spin(token=token, query=query)
+            time.sleep(2)
         
         if auto_task == 'y':
             for index, query in enumerate(queries):
@@ -103,7 +103,7 @@ def main():
                 if token == None:
                     token = tom.user_login(query)
                 print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
-                # tom.list_tasks(token=token,query=query)
+                tom.list_tasks(token=token,query=query)
                 if auto_combo == 'y':
                     tom.puzzle_task(token, query)
                 # tom.rank_data(token=token)
