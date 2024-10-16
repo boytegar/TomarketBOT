@@ -561,25 +561,20 @@ class Tomarket:
                     games = dats.get('games')
                     score = dats.get('score')
                     if statuss == 0:
-                        current_time = datetime.now()
-                        date_part = current_time.strftime("%Y-%m-%d")
-                        split_time  = dats.get('startTime')
-                        end_time = split_time.split(" ")[0]
-                        if date_part == end_time:
-                            list_combo = self.get_combo_puzzle()
-                            combo = self.find_by_id(list_combo, str(taskId))
-                            if combo is not None:
-                                payload = {'task_id': taskId, 'code': combo}
-                                data_puzzle_claim = self.puzzle_claim(token, payload)
-                                if data_puzzle_claim.status_code == 200:
-                                    jsons = data_puzzle_claim.json()
-                                    data = jsons.get('data',{})
-    
-                                    if len(data) == 0:
-                                        print_timestamp(f"Puzzle Done, Reward : {star} Star, {games} Tiket Games, {score} Tomato")
-                                    else:
-                                        message = data.get('message','')
-                                        print_timestamp(message)
+                        list_combo = self.get_combo_puzzle()
+                        combo = self.find_by_id(list_combo, str(taskId))
+                        if combo is not None:
+                            payload = {'task_id': taskId, 'code': combo}
+                            data_puzzle_claim = self.puzzle_claim(token, payload)
+                            if data_puzzle_claim.status_code == 200:
+                                jsons = data_puzzle_claim.json()
+                                data = jsons.get('data',{})
+
+                                if len(data) == 0:
+                                    print_timestamp(f"Puzzle Done, Reward : {star} Star, {games} Tiket Games, {score} Tomato")
+                                else:
+                                    message = data.get('message','')
+                                    print_timestamp(message)
 
                                         
 
