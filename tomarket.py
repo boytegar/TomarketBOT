@@ -482,7 +482,7 @@ class Tomarket:
                                     for res in result:
                                         print_timestamp(f"[ Raffle Done, Reward {res.get('amount',0)} {res.get('type')} ]")
                                 else:
-                                    print_timestamp()
+                                    print_timestamp("error")
                         else:
                             print_timestamp('[ No stars to play raffle ]')
                 else:
@@ -516,21 +516,80 @@ class Tomarket:
             if status == 0:
                 dats = data.get('data')
                 ticket_spin_1 = dats.get('ticket_spin_1',0)
-                if ticket_spin_1 > 0:
-                    print_timestamp('Open Free Raffle')
-                    sleep(2)
-                    data_raffle = self.raffle(token=token, payload=payloads)
-                    if data_raffle is not None:
-                        status = data_raffle.get('status', 0)
-                        if status == 0:
-                            data = data_raffle.get('data',{})
-                            result = data.get('results',[])
-                            for res in result:
-                                print_timestamp(f"[ Raffle Done, Reward {res.get('amount',0)} {res.get('type')} ]")
-                        else:
-                            print_timestamp()
+                while True:
+                    if ticket_spin_1 > 0:
+                        print_timestamp('Open Free Raffle')
+                        sleep(2)
+                        data_raffle = self.raffle(token=token, payload=payloads)
+                        if data_raffle is not None:
+                            status = data_raffle.get('status', 0)
+                            if status == 0:
+                                ticket_spin_1 -= 1
+                                data = data_raffle.get('data',{})
+                                result = data.get('results',[])
+                                for res in result:
+                                    print_timestamp(f"[ Raffle Done, Reward {res.get('amount',0)} {res.get('type')} ]")
+                            else:
+                                print_timestamp("error")
+                    else:
+                        break
 
         return data
+
+    def get_combo_puzzle(self):
+        url = 'https://raw.githubusercontent.com/boytegar/TomarketBOT/refs/heads/master/combo.json'
+        response = requests.get(url)
+        data = self.response_data(response)
+        return data
+
+    def puzzle_task(self, token, query):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/tasks/puzzle'
+        self.headers.update({
+            'Authorization': token
+        })
+        payload = {"language_code":"en","init_data": query}
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        data = self.response_data(response)
+        if data is not None:
+            status = data.get('status')
+            if status == 0:
+                list_data = data.get('data')
+                for dats in list_data:
+                    taskId = dats.get('taskId')
+                    statuss = dats.get('status')
+                    star = dats.get('star')
+                    games = dats.get('games')
+                    score = dats.get('score')
+                    if statuss == 0:
+                        current_time = datetime.now()
+                        date_part = current_time.strftime("%Y-%m-%d")
+                        split_time  = dats.get('startTime')
+                        end_time = split_time.split(" ")[0]
+                        if date_part == end_time:
+                            list_combo = self.get_combo_puzzle()
+                            combo = self.find_by_id(list_combo, str(taskId))
+                            if combo is not None:
+                                payload = {'task_id': taskId, 'code': combo}
+                                data_puzzle_claim = self.puzzle_claim(token, payload)
+                                if data_puzzle_claim.status_code == 200:
+                                    jsons = data_puzzle_claim.json()
+                                    data = jsons.get('data',{})
+                                    print(data)
+                                    if len(data) == 0:
+                                        print_timestamp(f"Puzzle Done, Reward : {star} Star, {games} Tiket Games, {score} Tomato")
+                                    else:
+                                        message = data.get('message','')
+                                        print_timestamp(message)
+                                        
+
+
+    def puzzle_claim(self, token, payload):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/tasks/puzzleClaim'
+        self.headers.update({
+            'Authorization': token
+        })
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        return response
 
     def response_data(self, response):
         if response.status_code >= 500:
@@ -543,4 +602,10 @@ class Tomarket:
             return response.json()
         else:
             return None
+        
+    def find_by_id(self, json_data, id):
+        for key, value in json_data.items():
+            if key == id:
+                return value
+        return None
 
