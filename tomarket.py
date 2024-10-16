@@ -574,13 +574,13 @@ class Tomarket:
                                 if data_puzzle_claim.status_code == 200:
                                     jsons = data_puzzle_claim.json()
                                     data = jsons.get('data',{})
-                                    print(data)
+    
                                     if len(data) == 0:
                                         print_timestamp(f"Puzzle Done, Reward : {star} Star, {games} Tiket Games, {score} Tomato")
                                     else:
                                         message = data.get('message','')
                                         print_timestamp(message)
-                                        
+
                                         
 
 
