@@ -80,7 +80,7 @@ def main():
                 token = tom.user_login(query)
                 save(user.get('id'), token)
                 time.sleep(2)
-            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {parse.get('user')['username']} ]{Style.RESET_ALL}")
+            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
             tom.rank_data(token=token, selector=used_stars)
             time.sleep(2)
             tom.claim_daily(token=token)
@@ -103,7 +103,7 @@ def main():
                 if token == None:
                     token = tom.user_login(query)
                 print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
-                tom.list_tasks(token=token,query=query)
+                # tom.list_tasks(token=token,query=query)
                 if auto_combo == 'y':
                     tom.puzzle_task(token, query)
                 # tom.rank_data(token=token)
