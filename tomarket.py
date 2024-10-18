@@ -6,8 +6,7 @@ from urllib.parse import parse_qs, unquote
 import json
 import pytz
 import random
-import requests
-
+from curl_cffi import requests
 
 def print_timestamp(message):
     now = datetime.now().isoformat(" ").split(".")[0]
@@ -46,7 +45,6 @@ class Tomarket:
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/user/login'
         try:
             while True:
-                sleep(2)
                 payload = {
                     'init_data': query,
                     'invite_code': '',
