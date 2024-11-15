@@ -5,7 +5,7 @@ from time import sleep, time
 from urllib.parse import parse_qs, unquote
 import json
 import random
-from curl_cffi import requests
+import requests
 
 def print_timestamp(message):
     now = datetime.now().isoformat(" ").split(".")[0]
