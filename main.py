@@ -41,16 +41,18 @@ def generate_token():
     queries = load_credentials()
     sum = len(queries)
     for index, query in enumerate(queries):
-            parse = parse_query(query)
-            user = parse.get('user')
-            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
-            token = get(user['id'])
-            if token == None:
-                print_timestamp("Generate token...")
-                time.sleep(2)
-                token = tom.user_login(query)
-                save(user.get('id'), token)
-                print_timestamp("Generate Token Done!")
+        parse = parse_query(query)
+        user = parse.get('user')
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+        token = get(user['id'])
+        if token == None:
+            print_timestamp("Generate token...")
+            time.sleep(2)
+            token = tom.user_login(query)
+            save(user.get('id'), token)
+            print_timestamp("Generate Token Done!")
+        
+
                 
 
 def main():
@@ -61,7 +63,7 @@ def main():
     auto_combo = input("auto claim combo puzzle y/n : ").strip().lower()
     random_number = input("set random score in game 300-500  y/n  : ").strip().lower()
     free_raffle = input("enable free raffle  y/n  : ").strip().lower()
-    selector_weekly = input("auto claim $TOMA weekly : y/n ").strip().lower()
+    selector_weekly = input("auto claim $TOMA weekly y/n : ").strip().lower()
     used_stars = input("use star for : 1. upgrade rank | 2.auto spin | n.(skip all) (1/2/n): ").strip().lower()
     while True:
         queries = load_credentials()
@@ -137,6 +139,24 @@ def main():
             time.sleep(total)
 
 
+def check_elig():
+    tom = Tomarket()
+    queries = load_credentials()
+    sum = len(queries)
+    for index, query in enumerate(queries):
+        parse = parse_query(query)
+        user = parse.get('user')
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+        token = get(user['id'])
+        if token == None:
+            print_timestamp("Generate token...")
+            time.sleep(2)
+            token = tom.user_login(query)
+            save(user.get('id'), token)
+            print_timestamp("Generate Token Done!")
+        time.sleep(3)
+        tom.check_elig(token, query)
+
 def start():
     print(r"""
         
@@ -146,7 +166,7 @@ def start():
         select this one :
         1. claim daily
         2. generate token
-          
+        3. check eligibility
           """)
     selector = input("Select the one  : ").strip().lower()
 
@@ -154,6 +174,8 @@ def start():
         main()
     elif selector == '2':
         generate_token()
+    elif selector == '3':
+        check_elig()
     else:
         exit()
 

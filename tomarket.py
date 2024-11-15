@@ -566,6 +566,28 @@ class Tomarket:
                     print_timestamp(f"Claimed Done, Reward {amount} $TOMA")
                 else:
                     self.toma_claim(token=token)
+    
+    def check_elig(self, token, query):
+        self.headers.update({
+            'Authorization': token
+        })
+        payload = {"language_code":"en","init_data":query,"round":"One"}
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/check'
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        data = self.response_data(response)
+        if data is not None:
+            status = data.get('status')
+            if status == 0:
+                datas = data.get('data', {})
+                tomaAirDrop = datas.get('tomaAirDrop', {})
+                rank = datas.get('rank', 'Not Found')
+                amount = tomaAirDrop.get('amount', 0)
+
+                print_timestamp(f"tomaAirDrop Amount:{amount}")
+                print_timestamp(f"Rank: {rank}")
+    
+    def airdrop_task(self, token, query):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/airdropTasks'
 
     def toma_claim(self, token):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/claim'
