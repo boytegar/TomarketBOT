@@ -61,13 +61,14 @@ def main():
     auto_task = input("auto clear task y/n  : ").strip().lower()
     auto_game = input("auto play game  y/n  : ").strip().lower()
     auto_combo = input("auto claim combo puzzle y/n : ").strip().lower()
+    auto_convert = input("auto convert star y/n : ").strip().lower()
     random_number = input("set random score in game 300-500  y/n  : ").strip().lower()
     free_raffle = input("enable free raffle  y/n  : ").strip().lower()
     used_stars = input("use star for : 1. upgrade rank | 2.auto spin | n.(skip all) (1/2/n): ").strip().lower()
     while True:
         queries = load_credentials()
         sum = len(queries)
-        delay = int(3 * random.randint(3700, 3750))
+        delay = int(6 * random.randint(3700, 3750))
         # generate_token()
         start_time = time.time()
                 
@@ -122,7 +123,7 @@ def main():
                 if token == None:
                     token = tom.user_login(query)
                 print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
-                tom.user_balance(token=token, random_number=random_number)
+                tom.user_balance(token=token, random_number=random_number, auto_convert=auto_convert)
                 time.sleep(2)
 
         

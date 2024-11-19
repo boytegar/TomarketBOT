@@ -56,7 +56,7 @@ class Tomarket:
         except (Exception) as e:
             return print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {e} ]{Style.RESET_ALL}")
 
-    def user_balance(self, token, random_number):
+    def user_balance(self, token, random_number, auto_convert):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/user/balance'
         try:
             self.headers.update({
@@ -65,12 +65,17 @@ class Tomarket:
             response = requests.post(url=url, headers=self.headers)
             data = self.response_data(response)
             if data is not None:
+                balances = data['data']['available_balance']
                 print_timestamp(
-                    f"{Fore.YELLOW + Style.BRIGHT}[ Available Balance {data['data']['available_balance']} ]{Style.RESET_ALL}"
+                    f"{Fore.YELLOW + Style.BRIGHT}[ Available Balance {balances} ]{Style.RESET_ALL}"
                     f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
                     f"{Fore.BLUE + Style.BRIGHT}[ Play Passes {data['data']['play_passes']} ]{Style.RESET_ALL}"
                 )
-        
+                if auto_convert == 'y':
+                    if balances > 20000:
+                        sleep(2)
+                        self.convert_star(token)
+                        
                 while data['data']['play_passes'] > 0:
                     sleep(2)
                     point = 600
@@ -107,6 +112,27 @@ class Tomarket:
                     self.claim_game(token=token, points=point)
                 elif data['status'] == 500:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ No Chance To Play Game ]{Style.RESET_ALL}")
+                else:
+                    print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {data['message']} ]{Style.RESET_ALL}")
+            else:
+                print_timestamp('Data play game is None')
+        except (Exception) as e:
+            return print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {e} ]{Style.RESET_ALL}")
+
+    def convert_star(self, token):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/tomatoToStar'
+        try:
+            self.headers.update({
+                'Authorization': token
+            })
+            response = requests.post(url=url, headers=self.headers)
+            data = self.response_data(response)
+            if data is not None:
+                if data['status'] == 0:
+                    datas = data.get('data')
+                    success = datas.get('success')
+                    if success:
+                        print_timestamp("Convert To Star Done")
                 else:
                     print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {data['message']} ]{Style.RESET_ALL}")
             else:
