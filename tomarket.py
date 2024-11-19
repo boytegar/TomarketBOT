@@ -1,5 +1,5 @@
 from colorama import Fore, Style
-from datetime import datetime
+from datetime import datetime,UTC
 from fake_useragent import FakeUserAgent
 from time import sleep, time
 from urllib.parse import parse_qs, unquote
@@ -739,7 +739,9 @@ class Tomarket:
                     if statuss == 0:
                         list_combo = self.get_combo_puzzle()
                         combo = self.find_by_id(list_combo, "combo")
-                        if combo is not None:
+                        date = self.find_by_id(list_combo, "date")
+                        date_today = str(datetime.now(UTC).date())
+                        if date==date_today:
                             payload = {'task_id': taskId, 'code': combo}
                             data_puzzle_claim = self.puzzle_claim(token, payload)
                             if data_puzzle_claim.status_code == 200:
