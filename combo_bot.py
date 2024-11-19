@@ -75,6 +75,7 @@ with open(file_name, 'r') as file:
     data = json.load(file)
 
 data['combo'] = ','.join(map(str, combo))
+data['date'] = str(datetime.datetime.now(datetime.UTC).date())
 
 with open(file_name, 'w', encoding='utf-8') as json_file:
     json.dump(data, json_file)
