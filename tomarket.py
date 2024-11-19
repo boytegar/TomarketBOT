@@ -738,7 +738,7 @@ class Tomarket:
                     score = dats.get('score')
                     if statuss == 0:
                         list_combo = self.get_combo_puzzle()
-                        combo = self.find_by_id(list_combo, str(taskId))
+                        combo = self.find_by_id(list_combo, "combo")
                         if combo is not None:
                             payload = {'task_id': taskId, 'code': combo}
                             data_puzzle_claim = self.puzzle_claim(token, payload)
