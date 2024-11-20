@@ -107,9 +107,11 @@ class Tomarket:
                     total_time = end_time - start_time
                     total_seconds = total_time.total_seconds()
                     print_timestamp(f"{Fore.GREEN + Style.BRIGHT}[ Game Started Please Wait {int(total_seconds)} Seconds ]{Style.RESET_ALL}")
+                    datas = data.get('data',{})
+                    stars = datas.get('stars',0)
                     slp = random.randint(30, 35)
                     sleep(slp)
-                    self.claim_game(token=token, points=point)
+                    self.claim_game(token=token, points=point, stars=stars)
                 elif data['status'] == 500:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ No Chance To Play Game ]{Style.RESET_ALL}")
                 else:
@@ -140,7 +142,7 @@ class Tomarket:
         except (Exception) as e:
             return print_timestamp(f"{Fore.RED + Style.BRIGHT}[ {e} ]{Style.RESET_ALL}")
 
-    def claim_game(self, token: str, points: int):
+    def claim_game(self, token: str, points: int, stars: int):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/game/claim'
         try:
             self.headers.update({
@@ -148,13 +150,14 @@ class Tomarket:
             })
             payload = {
                 'game_id': '59bcd12e-04e2-404c-a172-311a0084587d',
-                'points': points
+                'points': points,
+                'stars': stars
             }
             response = requests.post(url=url, headers=self.headers, json=payload)
             data = self.response_data(response)
             if data is not None:
                 if data['status'] == 0:
-                    print_timestamp(f"{Fore.GREEN + Style.BRIGHT}[ Game Claimed {data['data']['points']} ]")
+                    print_timestamp(f"{Fore.GREEN + Style.BRIGHT}[ Game Claimed {data['data']['points']} Tomato & {data['data']['stars']} Stars ]")
                 elif data['status'] == 500:
                     print_timestamp(f"{Fore.YELLOW + Style.BRIGHT}[ Game Not Start ]")
                     self.play_game(token=token, point=points)
