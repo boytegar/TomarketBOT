@@ -63,7 +63,7 @@ else:
     post_req = requests.get(url + "community").json()
     post_id = post_req['comments'][0]['commentId']
     comments_req = requests.get(
-        "https://inv.nadeko.net/api/v1/post/" + post_id + "/comments?ucid=UCzhLhU-OeaXP4nlaMvJfKUQ/")
+        "https://inv.nadeko.net/api/v1/post/" + post_id + "/comments?ucid=UCzhLhU-OeaXP4nlaMvJfKUQ/").json()
     for i in range(20):
         prob_combo.append(extract_numbers(comments_req['comments'][i]['content']))
 
