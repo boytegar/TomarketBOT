@@ -142,6 +142,7 @@ def check_elig():
     queries = load_credentials()
     sum = len(queries)
     selector_weekly = input("auto claim $TOMA weekly y/n : ").strip().lower()
+    selector_og = input("auto checked OG y/n : ").strip().lower()
     for index, query in enumerate(queries):
         parse = parse_query(query)
         user = parse.get('user')
@@ -158,8 +159,30 @@ def check_elig():
         time.sleep(2)
         tom.airdrop_task(token, query)
         time.sleep(2)
+        if selector_og == 'y':
+            tom.checked(token=token, query=query, round='OG')
         if selector_weekly == "y":
-            tom.checked(token=token, query=query)
+            tom.checked(token=token, query=query, round='One')
+
+def check_og():
+    tom = Tomarket()
+    queries = load_credentials()
+    sum = len(queries)
+
+    for index, query in enumerate(queries):
+        parse = parse_query(query)
+        user = parse.get('user')
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+        token = get(user['id'])
+        if token == None:
+            print_timestamp("Generate token...")
+            time.sleep(2)
+            token = tom.user_login(query)
+            save(user.get('id'), token)
+            print_timestamp("Generate Token Done!")
+        time.sleep(3)
+        tom.checked(token=token, query=query, round='OG')
+        
 
 def start():
     print(r"""
@@ -171,6 +194,7 @@ def start():
         1. claim daily
         2. generate token
         3. check eligibility & claim season reward
+        4. check reward early adopter
           """)
     selector = input("Select the one  : ").strip().lower()
 
@@ -180,6 +204,8 @@ def start():
         generate_token()
     elif selector == '3':
         check_elig()
+    elif selector == '4':
+        check_og()
     else:
         exit()
 

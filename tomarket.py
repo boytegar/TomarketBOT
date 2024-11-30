@@ -576,17 +576,18 @@ class Tomarket:
         data = self.response_data(response)
         return data
 
-    def checked(self, token, query):
+    def checked(self, token, query, round):
         self.headers.update({
             'Authorization': token
         })
-        payload = {"language_code":"en","init_data":query,"round":"One"}
+        payload = {"language_code":"en","init_data":query,"round":round}
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/check'
         response = requests.post(url=url, headers=self.headers, json=payload)
         data = self.response_data(response)
         if data is not None:
             status = data.get('status')
             if status == 0:
+                print_timestamp(f"Checked Reward {round}")
                 datas = data.get('data',{})
                 tomaAirDrop = datas.get('tomaAirDrop')
                 amount = tomaAirDrop.get('amount')
@@ -594,9 +595,10 @@ class Tomarket:
                 if claimed:
                     print_timestamp(f"Claimed Airdrop Done, Reward {amount} $TOMA")
                     sleep(2)
-                    self.season(token, query)
+                    if round == 'One':
+                        self.season(token, query)
                 else:
-                    self.toma_claim(token=token)
+                    self.toma_claim(token, round)
     
     def season(self, token, query):
         url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/season'
@@ -620,6 +622,7 @@ class Tomarket:
                     tomaAirDrop = datas.get('tomaAirDrop')
                     amount = tomaAirDrop.get('amount')
                     status = tomaAirDrop.get('status')
+                    print_timestamp(f"Claiming Round {name}")
                     self.toma_claim(token, name)
                 else:
                     print_timestamp(f"Season Reward Claimed Done")
