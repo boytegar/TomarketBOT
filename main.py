@@ -43,7 +43,7 @@ def generate_token():
     for index, query in enumerate(queries):
         parse = parse_query(query)
         user = parse.get('user')
-        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
         token = get(user['id'])
         if token == None:
             print_timestamp("Generate token...")
@@ -82,7 +82,7 @@ def main():
                 token = tom.user_login(query)
                 save(user.get('id'), token)
                 time.sleep(2)
-            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+            print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
             tom.rank_data(token=token, selector=used_stars)
             time.sleep(2)
             tom.claim_daily(token=token)
@@ -104,7 +104,7 @@ def main():
                 token = get(user['id'])
                 if token == None:
                     token = tom.user_login(query)
-                print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+                print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
                 tom.list_tasks(token=token,query=query)
                 if auto_combo == 'y':
                     tom.puzzle_task(token, query)
@@ -122,7 +122,7 @@ def main():
                 token = get(user['id'])
                 if token == None:
                     token = tom.user_login(query)
-                print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+                print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
                 tom.user_balance(token=token, random_number=random_number, auto_convert=auto_convert)
                 time.sleep(2)
 
@@ -142,11 +142,11 @@ def check_elig():
     queries = load_credentials()
     sum = len(queries)
     selector_weekly = input("auto claim $TOMA weekly y/n : ").strip().lower()
-    selector_og = input("auto checked OG y/n : ").strip().lower()
+    selector_og = 'n'
     for index, query in enumerate(queries):
         parse = parse_query(query)
         user = parse.get('user')
-        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
         token = get(user['id'])
         if token == None:
             print_timestamp("Generate token...")
@@ -172,7 +172,7 @@ def check_og():
     for index, query in enumerate(queries):
         parse = parse_query(query)
         user = parse.get('user')
-        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('username','')} ]{Style.RESET_ALL}")
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
         token = get(user['id'])
         if token == None:
             print_timestamp("Generate token...")
