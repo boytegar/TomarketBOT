@@ -36,6 +36,10 @@ def save(id, token):
         tokens[str(id)] = token
         open("tokens.json", "w").write(json.dumps(tokens, indent=4))
 
+def load_cex():
+     data = json.loads(open("cex.json").read())
+     return data
+
 def generate_token():
     tom = Tomarket()
     queries = load_credentials()
@@ -181,8 +185,46 @@ def check_og():
             save(user.get('id'), token)
             print_timestamp("Generate Token Done!")
         time.sleep(3)
-        tom.checked(token=token, query=query, round='OG')
+        # tom.checked(token=token, query=query, round='OG')
         
+
+def predeposit():
+    tom = Tomarket()
+    queries = load_credentials()
+    sum = len(queries)
+
+    for index, query in enumerate(queries):
+        parse = parse_query(query)
+        user = parse.get('user')
+        print_timestamp(f"{Fore.CYAN + Style.BRIGHT}[ Account {index+1}/{sum} {user.get('first_name','')} ]{Style.RESET_ALL}")
+        token = get(user['id'])
+        if token == None:
+            print_timestamp("Generate token...")
+            time.sleep(2)
+            token = tom.user_login(query)
+            save(user.get('id'), token)
+            print_timestamp("Generate Token Done!")
+        time.sleep(3)
+        data_cex = load_cex()
+        list = data_cex.get('list')
+        data = random.choice(list)
+        data_pre = tom.predeposit(token, query)
+        cex = data_pre.get('cex')
+        availableToma = data_pre.get('availableToma')
+        totalToma = data_pre.get('totalToma')
+        if len(cex) == 0:
+            payload = {
+                'amount': availableToma,
+                'chain': 'aptos',
+                'cex_name': data.get('cex_name'),
+                'cex_uid': data.get('uid'),
+                'wallet_address': data.get('address')
+            }
+            tom.predepositupdate(token, payload)
+        else:
+            data = cex[0]
+            print_timestamp(f"Cex : {data.get('cexName')} | UID : {data.get('cexUid')}")
+            print_timestamp(f"Amount : {data.get('lockToma')} | Address : {data.get('walletAddress')}")
 
 def start():
     print(r"""
@@ -195,6 +237,7 @@ def start():
         2. generate token
         3. check eligibility & claim season reward
         4. check reward early adopter
+        5. predeposit
           """)
     selector = input("Select the one  : ").strip().lower()
 
@@ -206,6 +249,8 @@ def start():
         check_elig()
     elif selector == '4':
         check_og()
+    elif selector == '5':
+        predeposit()
     else:
         exit()
 

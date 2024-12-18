@@ -1,0 +1,13 @@
+{
+    "list":[
+        {   "cex_name": "Gateio",
+            "uid":"0000000",
+            "address": "0x000000000000"
+        },
+        {
+            "cex_name": "Bitget",
+            "uid":"00000000000",
+            "address": "0x000000000000"
+        }
+    ]
+}

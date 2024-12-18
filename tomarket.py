@@ -813,3 +813,29 @@ class Tomarket:
                 return value
         return None
 
+    def predeposit(self, token, query):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/preDeposit'
+        self.headers.update({
+            'Authorization': token
+        })
+        payload = {"language_code":"en","init_data": query}
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        data = self.response_data(response)
+        if data is not None:
+            status = data.get('status')
+            if status == 0:
+                dats = data.get('data')
+                return dats
+    
+    def predepositupdate(self, token, payload):
+        url = 'https://api-web.tomarket.ai/tomarket-game/v1/token/preDepositUpdate'
+        self.headers.update({
+            'Authorization': token
+        })
+        response = requests.post(url=url, headers=self.headers, json=payload)
+        data = self.response_data(response)
+        if data is not None:
+            status = data.get('status')
+            if status == 0:
+                print_timestamp(f"Deposit Done, Cex: {payload.get('cex_name')} | Amount : {payload.get('amount')}")
+                print_timestamp(f"Wallet Address : {payload.get('wallet_address')}")
